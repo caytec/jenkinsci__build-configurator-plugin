@@ -54,7 +54,11 @@ public class MailSender implements Runnable {
             Properties props = System.getProperties();
             props.put("mail.smtp.host", host);
             props.put("mail.smtp.port", port);
-            props.put("mail.smtp.auth", "true");
+            if (pass.isEmpty()) {
+                props.put("mail.smtp.auth", "false");
+            } else {
+                props.put("mail.smtp.auth", "true");
+            }
             props.put("mail.smtp.starttls.enable", "true");
             Session session = Session.getDefaultInstance(props, null);
             MimeMessage mMessage = new MimeMessage(session);
@@ -78,7 +82,11 @@ public class MailSender implements Runnable {
                 mMessage.setSubject(message.getSubject(), BuildConfigurationManager.ENCODING);
                 mMessage.setText(message.getMassageText(), BuildConfigurationManager.ENCODING);
                 Transport transport = session.getTransport("smtp");
-                transport.connect(host, from, pass);
+                if (pass.isEmpty()) {
+                    transport.connect(host, from);
+                } else {
+                    transport.connect(host, from, pass);
+                }
                 transport.sendMessage(mMessage, mMessage.getAllRecipients());
                 transport.close();
             }

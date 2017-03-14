@@ -103,12 +103,12 @@ var configurator = (function () {
                 jQuery("#cleanWorkspace").prop('checked', false);
             }
             var buildOnCommitTriggerValue = t.responseObject().buildOnCommitTrigger;
-            
+
             if (buildOnCommitTrigger == null || buildOnCommitTriggerValue) {
                 jQuery('#buildOnCommitTrigger').prop('checked', true);
             }
             else {
-                jQuery('#buildOnCommitTrigger').prop('checked', false);    
+                jQuery('#buildOnCommitTrigger').prop('checked', false);
             }
 
             if (t.responseObject().creator != null) {
@@ -365,9 +365,11 @@ var configurator = (function () {
 
         var addUserField = jQuery("#addUserField");
         var uName = addUserField.val();
-        addUserAccess(uName);
-        addUserField.val("");
-
+        if(uName.length>0)
+        {
+            addUserAccess(uName);
+            addUserField.val("");
+        }
     }
     var addUserAccess = function(uName) {
         buildConfiguration.getUserAccessView(
@@ -512,13 +514,7 @@ var configurator = (function () {
         var build = jQuery("[name=projectToBuild]");
         var patBuild = jQuery("[name=fileToBuild]");
         var userConfig = jQuery("[name=userConfig]");
-        if (projectName.value == "") {
-            jQuery("#projectErrorText").html(" Please, enter your project name");
-            jQuery("#projectError").removeClass('display-none');
-            jQuery("#projectError").addClass('empty');
-            
-            
-
+        if (!isProjectNameValid()) {
             projectName.focus();
             return false;
         }
@@ -568,6 +564,7 @@ var configurator = (function () {
         }
         buildConfiguration.isNameFree(projectName.value, function (t) {
             if (t.responseObject() != false) {
+                jQuery("#fieldHelp").addClass('display-none');
                 document.getElementById("save").onclick = null;
                 setFormResultDialog("create");
                 document.getElementById('save').click();
@@ -850,22 +847,29 @@ var configurator = (function () {
         jQuery("#textReject").val("");
     }
 
-    var validateProject = function (project) {  //TODO !!!!!!!!!!!!!!!!!!!!
+    var isProjectNameValid = function () {
         var regPath = /^([a-zA-Z0-9_-]+)$/;
         var projectError = jQuery("#projectError");
         var projectErrorText = jQuery("#projectErrorText");
         var projectName = jQuery("[name=projectName]");
-        if (regPath.test(project.value)) {
+        var projectNameValue = jQuery('#projectName').val();
+        jQuery("#fieldHelp").addClass('display-none');
+        if (regPath.test(projectNameValue)) {
             projectError.addClass('display-none');
             projectErrorText.html("");
             projectName.removeClass('wrong');
+            return true;
         }
         else {
-
+            if(projectNameValue.length == 0){
+                projectErrorText.html(" Please enter your project name");
+            }
+            else{
+                projectErrorText.html(" This field may only contain alphanumeric characters, underscores or hyphens, and can't be empty.");
+            }
             projectError.removeClass('display-none');
-            projectErrorText.html(" This field may only contain alphanumeric characters, underscores or hyphens, and can't be empty.");
             projectName.addClass('wrong');
-
+            return false;
         }
     }
 
@@ -879,7 +883,6 @@ var configurator = (function () {
             deleteFromHidden(document.getElementById("build_machine_configuration"), checkBox.id);
         }
     }
-
 
     function validAllView() {
         var view = jQuery("div[name=projectToBuild]");
@@ -942,7 +945,7 @@ var configurator = (function () {
             });
        }
     }
-    
+
     var checkOtherConfiguration = function(element){
         var regexp = /^([a-zA-Z0-9_-]*)$/;
         if(regexp.test(jQuery(element).val())){
@@ -967,7 +970,7 @@ var configurator = (function () {
             }
             else{
                 element.css("background-color","antiquewhite");
-            }   
+            }
         });
     }
 
@@ -993,7 +996,7 @@ var configurator = (function () {
         checkPTB: checkPTB,
         OkReject: OkReject,
         CancelReject: CancelReject,
-        validateProject: validateProject,
+        isProjectNameValid: isProjectNameValid,
         bMCChange: bMCChange,
         getElementNumber:getElementNumber,
         deleteFromHidden:deleteFromHidden,

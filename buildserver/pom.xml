@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
-    <artifactId>buildserver</artifactId>
+    <groupId>configurator</groupId>
+    <artifactId>build-configurator-server</artifactId>
     <version>1.0</version>
-    <name>buildserver</name>
     <packaging>jar</packaging>
     <build>
-        <finalName>buildserver</finalName>
+        <finalName>build-configurator-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

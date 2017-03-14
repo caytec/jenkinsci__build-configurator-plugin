@@ -31,7 +31,7 @@
                         <div class="div-project-name">
                             <label>Project Name</label>
                         </div>
-                        <input class="textbox" id="projectName" name="projectName" onblur="configurator.validateProject(this);" type="text"/>
+                        <input class="textbox" id="projectName" name="projectName" onchange="configurator.isProjectNameValid();" type="text"/>
                     </div>
                     <div class="error-block display-none" id="projectError" style="margin-left: 205px;">
                         <img src="../images/16x16/error.png"/>

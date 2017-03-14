@@ -18,7 +18,9 @@
                 <input class="textbox" name="projectUrl" onblur="configurator.checkURL(this)" type="text" value="${view.getProjectUrl()}"/>
             </div>
             <div class="error-block display-none" name="projectUrl-block">
-                <img src="../images/16x16/error.png"/>Not correct url</div>
+                <img src="../images/16x16/error.png"/>
+                Empty or not correct url. This field cannot be empty and must contain correct url.
+            </div>
         </div>
         <div class="div-textinput">
             <j:if test="${view_old != null and view_old.getCredentials() != null and !view_old.getCredentials().equals(view.getCredentials())}">

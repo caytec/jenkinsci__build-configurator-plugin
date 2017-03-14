@@ -11,6 +11,7 @@ import com.amcbridge.jenkins.plugins.messenger.MailSender;
 import com.amcbridge.jenkins.plugins.models.BuildConfigurationModel;
 import com.amcbridge.jenkins.plugins.models.BuilderConfigModel;
 import com.amcbridge.jenkins.plugins.models.ProjectToBuildModel;
+import com.amcbridge.jenkins.plugins.models.UserAccessModel;
 import com.amcbridge.jenkins.plugins.view.ProjectToBuildView;
 import com.amcbridge.jenkins.plugins.view.ViewGenerator;
 import com.amcbridge.jenkins.plugins.xstreamelements.ScriptType;
@@ -88,10 +89,12 @@ public final class BuildConfigurator implements RootAction {
             JSONObject formAttribute = request.getSubmittedForm();
             String modelToCopyName = (String) formAttribute.get("copyConfigName");
             String modelNewName = (String) formAttribute.get("newConfigName");
-
+            String jenkinsUrl = BuildConfigurationManager.getJenkins().getRootUrl();
             User user = User.current();
             boolean isCopyConfigOk = (modelToCopyName != null) && (!modelToCopyName.isEmpty());
             boolean isNewConfigOk = (modelNewName != null) && (!modelNewName.isEmpty()) && (isNameFree(modelNewName));
+
+            jenkinsUrl = (jenkinsUrl == null ? "" : " " + jenkinsUrl + DEFAULT_PAGE_URL);
             if (user != null || isCopyConfigOk || isNewConfigOk) {
                 String username;
                 username = BuildConfigurationManager.getCurrentUserID();
@@ -104,7 +107,7 @@ public final class BuildConfigurator implements RootAction {
                 ConfigurationStatusMessage message
                         = new ConfigurationStatusMessage(modelNewName);
                 message.setSubject(modelNewName);
-                message.setDescription(MessageDescription.COPY + "\"" + modelToCopyName + "\"");
+                message.setDescription(MessageDescription.COPY + "\"" + modelToCopyName + "\"" + jenkinsUrl);
                 if (!BuildConfigurationManager.getUserMailAddress(modelToCopy).isEmpty()) {
                     message.setCC(BuildConfigurationManager.getUserMailAddress(modelToCopy));
                 }
@@ -125,12 +128,16 @@ public final class BuildConfigurator implements RootAction {
     public void doCreateNewConfigurator(final StaplerRequest request,
                                         final StaplerResponse response) {
         try {
+            String jenkinsUrl = BuildConfigurationManager.getJenkins().getRootUrl();
+            jenkinsUrl = (jenkinsUrl == null ? "" : " " + jenkinsUrl + DEFAULT_PAGE_URL);
             JSONObject formAttribute = request.getSubmittedForm();
 
             String newDefaultCredentials = formAttribute.get("default_credentials") != null ? formAttribute.get("default_credentials").toString() : null;
             BuildConfigurationModel newConfig = new BuildConfigurationModel();
 
             request.bindJSON(newConfig, formAttribute);
+
+            removeEmptyUsers(newConfig.getUserWithAccess());
 
             if (formAttribute.get("build_machine_configuration") != null) {
                 Map<String, Boolean> buildMachineConfiguration = new HashMap<>();
@@ -164,7 +171,7 @@ public final class BuildConfigurator implements RootAction {
             switch (type) {
                 case CREATE:
                     newConfig.setState(ConfigurationState.NEW);
-                    message.setDescription(MessageDescription.CREATE.toString());
+                    message.setDescription(MessageDescription.CREATE.toString() + jenkinsUrl);
                     break;
                 case EDIT:
                     if(currentConfig.getState().equals(ConfigurationState.NEW)) {
@@ -188,7 +195,7 @@ public final class BuildConfigurator implements RootAction {
                     newConfig.setState(ConfigurationState.REJECTED);
                     message.setDescription(MessageDescription.REJECT.toString()
                             + " " + formAttribute.get("rejectionReason").toString());
-                    newConfig.setRejectionReason(formAttribute.get("rejectionReason").toString());
+                    newConfig.setRejectionReason(formAttribute.get("rejectionReason").toString() + jenkinsUrl);
                     break;
                 default:
                     break;
@@ -213,6 +220,29 @@ public final class BuildConfigurator implements RootAction {
                 response.sendRedirect("./");
             } catch (IOException e) {
                 logger.error("Redirect page error", e);
+            }
+        }
+    }
+
+    /**
+     * Removes null objects, or UserAccessModel objects
+     * with null userName or empty userName from User list.
+     * We can also specify custom validation here.
+     *
+     * @param  users  list of UserAccessModel objects
+     */
+    private void removeEmptyUsers(List<UserAccessModel> users)
+    {
+        if(users!=null)
+        {
+            Iterator<UserAccessModel> i = users.iterator();
+            while (i.hasNext())
+            {
+                UserAccessModel user = i.next();
+                if (user == null || user.getUserName()==null || user.getUserName().isEmpty())
+                {
+                    i.remove();
+                }
             }
         }
     }
@@ -552,8 +582,7 @@ public final class BuildConfigurator implements RootAction {
 
             String host = prop.getProperty("host");
             String from = prop.getProperty("from");
-            String pass = prop.getProperty("pass");
-            isEmailPropertiesOK = (!"".equals(host)) && (!"".equals(from)) && (!"".equals(pass));
+            isEmailPropertiesOK = (!"".equals(host)) && (!"".equals(from));
             String strPort = prop.getProperty("port");
             isPortOk = (strPort != null) && (strPort.matches("[0-9]+"));
             return isEmailPropertiesOK && isPortOk;
@@ -607,4 +636,3 @@ public final class BuildConfigurator implements RootAction {
             return descriptor.doCheckSpec(value, null).toString();
     }
 }
-

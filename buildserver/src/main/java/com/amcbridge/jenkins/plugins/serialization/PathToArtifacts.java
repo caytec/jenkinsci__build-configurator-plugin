@@ -15,16 +15,16 @@ public class PathToArtifacts {
         this.files = Lists.newLinkedList();
     }
 
-    public void setFiles(List<String> value) {
-        files = value;
+    public void setFiles(List<String> files) {
+        this.files = files;
     }
 
     public List<String> getFiles() {
         return files;
     }
 
-    public void addFile(String value) {
-        files.add(value);
+    public void addFile(String fileName) {
+        files.add(fileName);
     }
 
     @Override

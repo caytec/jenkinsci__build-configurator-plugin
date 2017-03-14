@@ -7,12 +7,12 @@
         <version>1.612</version>
     </parent>
 
+    <groupId>configurator</groupId>
     <artifactId>build-configurator</artifactId>
     <version>1.0.6.0</version>
     <packaging>hpi</packaging>
-    <name>Build Automation Management Tool</name>
+    <name>Jenkins Build Automation Management Tool</name>
     <description>Allows configuring and administrating project builds, automatically creating jobs for Jenkins.</description>
-
 
     <licenses>
         <license>
@@ -37,7 +37,6 @@
     </pluginRepositories>
 
     <dependencies>
-
 
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
@@ -186,12 +185,10 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 <!--    <profiles>
         <profile>
-
             <id>jenkins_debug</id>
             <build>
                 <directory>work/plugins</directory>

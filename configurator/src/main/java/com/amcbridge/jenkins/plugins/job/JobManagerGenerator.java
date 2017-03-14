@@ -31,7 +31,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public class JobManagerGenerator {
@@ -42,10 +41,10 @@ public class JobManagerGenerator {
     private static final int[] SPECIAL_SYMBOLS = {40, 41, 43, 45, 95};
     private static final String XPATH_FILE_TO_COPY = "/project/buildWrappers/com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper/includes/text()";
     private static final String XPATH_BUILDERS = "/project/builders/*";
-    private static final String BATCH_COMMAND_TEXT = "java -jar \"%BUILDER_PATH%\\buildserver.jar\" -nodeName \"%NODE_NAME%\" -jobName \"%JOB_NAME%\" -workspace \"%WORKSPACE%\" -jenkinsHome \"%JENKINS_HOME%\"";
+    private static final String BATCH_COMMAND_TEXT = "java -jar \"%BUILDER_PATH%\\build-configurator-server.jar\" -nodeName \"%NODE_NAME%\" -jobName \"%JOB_NAME%\" -workspace \"%WORKSPACE%\" -jenkinsHome \"%JENKINS_HOME%\"";
     private static final String BATCH_LABEL_TEXT = "${ENV,var=\"OS\"}";
     private static final String BATCH_EXPRESSION_TEXT = "(?i)Windows.*";
-    private static final String SHELL_COMMAND_TEXT = "java -jar \"$BUILDER_PATH/buildserver.jar\" -nodeName \"$NODE_NAME\" -jobName \"$JOB_NAME\" -workspace \"$WORKSPACE\" -jenkinsHome $JENKINS_HOME";
+    private static final String SHELL_COMMAND_TEXT = "java -jar \"$BUILDER_PATH/build-configurator-server.jar\" -nodeName \"$NODE_NAME\" -jobName \"$JOB_NAME\" -workspace \"$WORKSPACE\" -jenkinsHome $JENKINS_HOME";
     private static final String SHELL_LABEL_TEXT = "${ENV,var=\"OS\"}";
     private static final String SHELL_EXPRESSION_TEXT = "(?i)Windows.*";
     private static final Logger logger = LoggerFactory.getLogger(JobManagerGenerator.class);
@@ -173,7 +172,7 @@ public class JobManagerGenerator {
         if (!useBuildServer) {
             removeBuildersRunScript(doc);
         }
-        if (isFileForUpdate && useBuildServer) {
+        if (isFileForUpdate && useBuildServer && !isBuilderScriptNodesExists(doc)) {
             importScriptNode(loadTemplate(JOB_TEMPLATE_PATH), doc);
         }
         setJobConfigFileName(doc, config.getProjectName());
@@ -213,6 +212,19 @@ public class JobManagerGenerator {
         if (batchScriptNode != null) {
             batchScriptNode.getParentNode().removeChild(batchScriptNode);
         }
+    }
+
+    private static boolean isBuilderScriptNodesExists(Document doc) {
+        Node batchScriptNode;
+        Node shellScriptNode;
+        try {
+            batchScriptNode = getBuildersScriptNode(doc, BATCH_EXPRESSION_TEXT, BATCH_LABEL_TEXT, BATCH_COMMAND_TEXT);
+            shellScriptNode = getBuildersScriptNode(doc, SHELL_EXPRESSION_TEXT, SHELL_LABEL_TEXT, SHELL_COMMAND_TEXT);
+        } catch (XPathExpressionException e) {
+            logger.error("Error parsing builder script nodes", e);
+            return false;
+        }
+        return batchScriptNode != null && shellScriptNode != null;
     }
 
     private static NodeList getBuildersNodeList(Document doc) throws XPathExpressionException {

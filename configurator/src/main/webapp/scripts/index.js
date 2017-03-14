@@ -6,7 +6,7 @@ function setDeletion(name)
 {
     document.getElementById("rejectDiv").className = "reject-div";
     document.getElementById("overlay").className = "overlay";
-    document.getElementById("helpReject").innerHTML = "Are you sure you want to delete '" + name + "' configuration";
+    document.getElementById("helpReject").innerHTML = "Are you sure you want to delete '" + name + "' configuration?";
     nameAction = name+"?setDeletion";  
 }
 
@@ -14,7 +14,7 @@ function deletePermanently(name)
 {
     document.getElementById("rejectDiv").className = "reject-div";
     document.getElementById("overlay").className = "overlay";
-    document.getElementById("helpReject").innerHTML = "Are you sure you want to delete '" + name + "' configuration permanently";
+    document.getElementById("helpReject").innerHTML = "Are you sure you want to delete '" + name + "' configuration permanently?";
     nameAction = name+"?deletePermanently"; 
 }
 
@@ -22,7 +22,7 @@ function restore(name)
 {
     document.getElementById("rejectDiv").className = "reject-div";
     document.getElementById("overlay").className = "overlay";
-    document.getElementById("helpReject").innerHTML = "Are you sure you want to restore '" + name + "' configuration";
+    document.getElementById("helpReject").innerHTML = "Are you sure you want to restore '" + name + "' configuration?";
     nameAction = name+"?restore"; 
 }
 
@@ -78,26 +78,27 @@ function deleteJob(name)
 }
 
 function copyConfiguration(configToCopyName) {
-   
-
-    
     var closeBtn = jQuery('#closeCopyConfig');
     var copyConfigBkgnd = jQuery('#copyConfig');
 
     jQuery('#copyConfigName').val(configToCopyName);
     jQuery('#copyConfigHeader').text('Copy configuration: \"' + configToCopyName + '\"');
-
     jQuery(copyConfigBkgnd).removeClass('display-none');
     jQuery(closeBtn).click(function() {
-        jQuery(copyConfigBkgnd).addClass('display-none');
+        closeCopyConfigModal();
     });
-
     window.onclick = function(event) {
         if (event.target == jQuery(copyConfigBkgnd)[0]) {
-            jQuery(copyConfigBkgnd).addClass('display-none');
+           closeCopyConfigModal();
         }
     }
+}
 
+function closeCopyConfigModal(){
+    jQuery('#copyConfig').addClass('display-none');
+    jQuery('#copyHelpDiv').addClass('display-none');
+    jQuery('#newConfigName').removeClass('wrong');
+    jQuery('#newConfigName').val('');
 }
 
 function isCopyNameCorrect(clickSubmit) {
@@ -113,7 +114,6 @@ function isCopyNameCorrect(clickSubmit) {
     else {
         jQuery('#copyHelpDiv').addClass('display-none');
     }
-    
     buildConfiguration.isNameFree(copyName.value, function (t) {
         if (t.responseObject() != false) {
             jQuery('#copyHelpDiv').addClass('display-none');
@@ -129,6 +129,5 @@ function isCopyNameCorrect(clickSubmit) {
                 jQuery(copyName).addClass('wrong');
             }
     });
-
     return false;
 }
