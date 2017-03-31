@@ -2,6 +2,7 @@ package com.amcbridge.jenkins.plugins.view;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -20,7 +21,7 @@ import com.amcbridge.jenkins.plugins.enums.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ViewGenerator {
+public class ViewGenerator implements Serializable{
 
     private static final String PROJECT_TO_BUILD_VIEW = "/plugins/build-configurator/view/ProjectToBuildView.xml";
     private static final String BUILDER_VIEW = "/plugins/build-configurator/view/BuilderView.xml";
@@ -346,7 +347,11 @@ public class ViewGenerator {
     private String launchScript(JellyContext jcontext, String viewTemplatePath)
             throws UnsupportedEncodingException, JellyException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        jcontext.runScript(new File(viewTemplatePath), XMLOutput.createXMLOutput(baos));
+        try {
+            jcontext.runScript(new File(viewTemplatePath), XMLOutput.createXMLOutput(baos));
+        } catch (JellyException e) {
+            throw new JellyException(e);
+        }
         return new String(baos.toByteArray(), BuildConfigurationManager.ENCODING);
     }
 

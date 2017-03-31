@@ -2,6 +2,7 @@ package com.amcbridge.jenkins.plugins.job;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public class JobSCM {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder;
         Node scm;
-        try(InputStream inputSCM = new ByteArrayInputStream(xml.getBytes())) {
+        try(InputStream inputSCM = new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8")))) {
             docBuilder = docFactory.newDocumentBuilder();
             scm = docBuilder.parse(inputSCM);
             Node node = doc.importNode(scm.getChildNodes().item(0), true);

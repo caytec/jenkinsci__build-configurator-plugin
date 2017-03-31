@@ -29,6 +29,8 @@ import org.kohsuke.stapler.bind.JavaScriptMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.mail.MessagingException;
+import javax.servlet.ServletException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,7 +145,8 @@ public final class BuildConfigurator implements RootAction {
                 Map<String, Boolean> buildMachineConfiguration = new HashMap<>();
                 String[] buildMachineConfigurationStr = BuildConfigurationManager
                         .getPath(formAttribute.get("build_machine_configuration").toString());
-                for (Node item : Jenkins.getInstance().getNodes()) {
+
+                for (Node item : BuildConfigurationManager.getJenkins().getNodes()) {
                     buildMachineConfiguration.put(item.getNodeName(), false);
                 }
                 for (String item : buildMachineConfigurationStr) {
@@ -213,7 +216,7 @@ public final class BuildConfigurator implements RootAction {
                 message.setDestinationAddress(getAdminEmails());
                 mail.sendMail(message);
             }
-        } catch (Exception e) {
+        } catch (IOException | MessagingException | ServletException e) {
             logger.error("Fail creating new configuration", e);
         } finally {
             try {

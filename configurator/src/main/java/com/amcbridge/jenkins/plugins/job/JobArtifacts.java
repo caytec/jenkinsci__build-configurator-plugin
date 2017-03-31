@@ -48,21 +48,21 @@ public class JobArtifacts implements JobElementDescription {
     }
 
     private String getArtifacts(BuildConfigurationModel config) {
-        String result = StringUtils.EMPTY;
-        String local;
+        StringBuffer result = new StringBuffer(StringUtils.EMPTY);
+        StringBuffer local;
         if (config.getProjectToBuild() == null) {
-            return result;
+            return result.toString();
         }
 
         for (ProjectToBuildModel artf : config.getProjectToBuild()) {
-            local = StringUtils.join(artf.getArtifacts(), JobManagerGenerator.COMMA_SEPARATOR);
+            local = new StringBuffer(StringUtils.join(artf.getArtifacts(), JobManagerGenerator.COMMA_SEPARATOR));
             if (result.length() > 0 && local.length() > 0) {
-                result += JobManagerGenerator.COMMA_SEPARATOR + local;
+                result.append(JobManagerGenerator.COMMA_SEPARATOR + local);
             } else {
-                result += local;
+                result.append(local);
             }
         }
-        return result;
+        return result.toString();
     }
 
 }

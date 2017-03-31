@@ -18,14 +18,23 @@ public class MailSender implements Runnable {
     private String from;
     private String pass;
     private Integer port;
-    private MessageInfo message;
+    private static MessageInfo message;
     private static final String MAIL_PROPERTIES_FILE_NAME = "/plugins/build-configurator/config/MailSender.properties";
     private static final Logger logger = LoggerFactory.getLogger(BuildConfigurator.class);
 
     public void sendMail(MessageInfo message) throws MessagingException {
-        this.message = message;
+        if(message != null) {
+            setMessage(message);
+        }
         Thread theard = new Thread(new MailSender());
         theard.start();
+    }
+
+    private synchronized static void setMessage(MessageInfo m) {message = m;
+    }
+
+    private static MessageInfo getMessage() {
+        return message;
     }
 
     private void load() {
@@ -49,7 +58,7 @@ public class MailSender implements Runnable {
     @Override
     public void run() {
         try {
-            MessageInfo message = this.message;
+            MessageInfo message = getMessage();
             Boolean isRecepients = false;
             Properties props = System.getProperties();
             props.put("mail.smtp.host", host);

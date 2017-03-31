@@ -48,7 +48,7 @@ public class JobVersionFile implements JobElementDescription {
         }
 
         for (ProjectToBuildModel isVersionFile : config.getProjectToBuild()) {
-            if (isVersionFile.IsVersionFiles()) {
+            if (isVersionFile.isVersionFiles()) {
                 return true;
             }
         }

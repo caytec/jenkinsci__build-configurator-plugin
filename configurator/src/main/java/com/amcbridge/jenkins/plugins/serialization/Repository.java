@@ -2,8 +2,8 @@ package com.amcbridge.jenkins.plugins.serialization;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @XStreamAlias("repository")
 public class Repository {
@@ -32,14 +32,14 @@ public class Repository {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Config)) {
+        if (obj instanceof Repository) {
+        return new EqualsBuilder()
+                .append(this.type, ((Repository)obj).type)
+                .append(this.url, ((Repository)obj).url)
+                .isEquals();
+    } else {
             return false;
         }
-        Repository other = Repository.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.type, other.type)
-                .append(this.url, other.url)
-                .isEquals();
     }
 
     @Override

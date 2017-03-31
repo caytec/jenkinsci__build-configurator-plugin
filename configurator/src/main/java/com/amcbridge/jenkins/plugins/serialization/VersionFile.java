@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class VersionFile {
 
@@ -42,14 +42,14 @@ public class VersionFile {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Config)) {
+        if (obj instanceof VersionFile) {
+            return new EqualsBuilder()
+                    .append(this.files, ((VersionFile)obj).files)
+                    .append(this.versionFile, ((VersionFile)obj).versionFile)
+                    .isEquals();
+        } else {
             return false;
         }
-        VersionFile other = VersionFile.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.files, other.files)
-                .append(this.versionFile, other.versionFile)
-                .isEquals();
     }
 
     @Override

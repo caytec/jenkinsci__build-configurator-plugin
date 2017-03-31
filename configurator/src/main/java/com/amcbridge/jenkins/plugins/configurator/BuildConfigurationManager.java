@@ -72,6 +72,15 @@ public class BuildConfigurationManager {
         }
     }
 
+    public static String getCurrentUserFullName() {
+        User user = User.current();
+        if (user != null) {
+            return user.getFullName();
+        } else {
+            return STRING_EMPTY;
+        }
+    }
+
     private static File getConfigFileFor(String id) throws JenkinsInstanceNotFoundException {
         return new File(new File(getRootDir(), id), CONFIG_FILE_NAME);
     }
@@ -105,7 +114,9 @@ public class BuildConfigurationManager {
 
         File checkFile = new File(getRootDirectory() + "/" + projectPath);
         if (!checkFile.exists()) {
-            checkFile.mkdirs();
+            if(!checkFile.mkdirs()) {
+                throw new IOException("Unable to create path:" + checkFile.getPath());
+            }
         }
 
         XmlFile fileWriter = getConfigFile(projectPath);
@@ -127,30 +138,34 @@ public class BuildConfigurationManager {
     }
 
     static List<BuildConfigurationModel> loadAllConfigurations()
-            throws IOException{
+            throws IOException {
         List<BuildConfigurationModel> configs = new ArrayList<>();
         File file = new File(getRootDirectory());
         if (!file.exists() || file.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY) == null) {
             return new LinkedList<>();
         }
         File[] directories = file.listFiles((FileFilter) DirectoryFileFilter.DIRECTORY);
-        for (File directory : directories) {
-            File configFile = new File(directory, "config.xml");
-            if (isCurrentUserHasAccess(directory.getName()) && configFile.exists()) {
-                configs.add(load(directory.getName()));
+        if (directories != null) {
+            for (File directory : directories) {
+                File configFile = new File(directory, "config.xml");
+                if (isCurrentUserHasAccess(directory.getName()) && configFile.exists()) {
+                    configs.add(load(directory.getName()));
+                }
             }
         }
         return configs;
     }
 
-    private static void deleteFiles(String[] files, String pathFolder) {
+    private static void deleteFiles(String[] files, String pathFolder) throws IOException {
         File file;
         for (String strFile : files) {
             if (strFile.isEmpty()) {
                 continue;
             }
             file = new File(pathFolder + "/" + strFile);
-            file.delete();
+            if(!file.delete()) {
+                throw new IOException("Unable to delete " + file.getPath());
+            }
         }
     }
 
@@ -263,7 +278,12 @@ public class BuildConfigurationManager {
     }
 
     public static String getAdminEmail() {
-        return JenkinsLocationConfiguration.get().getAdminAddress();
+        JenkinsLocationConfiguration configuration = JenkinsLocationConfiguration.get();
+        if (configuration != null) {
+            return configuration.getAdminAddress();
+        } else {
+            return STRING_EMPTY;
+        }
     }
 
     public static String getUserMailAddress(BuildConfigurationModel config) {
@@ -340,11 +360,11 @@ public class BuildConfigurationManager {
         }
     }
 
-    public static void setDefaultCredentials(String credentials) throws JenkinsInstanceNotFoundException {
+    public static void setDefaultCredentials(String credentials) throws IOException {
         Properties prop = new Properties();
         File path = getRootDir();
-        if (!path.exists()) {
-            path.mkdirs();
+        if (!path.exists() ||  !path.mkdirs()) {
+            throw new IOException("Unable to create path" + path.getPath());
         }
         try (OutputStream output = new FileOutputStream(path + "/" + DEFAULT_CREDENTIALS_PROPERTIES_FILE_NAME);) {
             prop.setProperty(CREDENTIALS_PROPERTY_NAME, credentials);
@@ -423,8 +443,9 @@ public class BuildConfigurationManager {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (ParserConfigurationException | SAXException e) {
             logger.error("Parsing credentials file error", e);
+            throw new RuntimeException("Parsing credentials file error", e);
         }
         return credentialItemList;
     }

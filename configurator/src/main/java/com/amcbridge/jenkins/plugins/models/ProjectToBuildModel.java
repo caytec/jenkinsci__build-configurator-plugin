@@ -116,7 +116,11 @@ public class ProjectToBuildModel {
     }
 
     public String[] getVersionFiles() {
-        return versionFiles;
+        if (this.versionFiles != null) {
+            return versionFiles.clone();
+        } else {
+            return null;
+        }
     }
 
     public void setCredentials(String credentials) {
@@ -143,7 +147,7 @@ public class ProjectToBuildModel {
         return branchName;
     }
 
-    public Boolean IsVersionFiles() {
+    public Boolean isVersionFiles() {
         return isVersionFiles;
     }
 
@@ -172,15 +176,27 @@ public class ProjectToBuildModel {
     }
 
     public String[] getArtifacts() {
-        return artifacts;
+        if (this.artifacts != null) {
+            return artifacts.clone();
+        } else {
+            return null;
+        }
     }
 
     public void setArtifacts(String[] artifacts) {
-        this.artifacts = artifacts;
+        if (artifacts != null) {
+            this.artifacts = artifacts.clone();
+        } else {
+            this.artifacts = null;
+        }
     }
 
     public void setVersionFiles(String[] versionFiles) {
-        this.versionFiles = versionFiles;
+        if (versionFiles != null) {
+            this.versionFiles = versionFiles.clone();
+        } else {
+            this.versionFiles = null;
+        }
     }
 
     public UUID getGuid() {

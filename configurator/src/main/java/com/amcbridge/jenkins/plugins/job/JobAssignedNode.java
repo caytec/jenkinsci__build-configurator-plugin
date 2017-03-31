@@ -64,20 +64,20 @@ public class JobAssignedNode implements JobElementDescriptionCheckBox {
     }
 
     private String getNodes(BuildConfigurationModel config) {
-        String result = StringUtils.EMPTY;
+        StringBuffer result = new StringBuffer(StringUtils.EMPTY);
         if (config.getBuildMachineConfiguration() == null
                 || config.getBuildMachineConfiguration().size() == 0) {
-            return result;
+            return result.toString();
         }
         for (Map.Entry<String, Boolean> entry : config.getBuildMachineConfiguration().entrySet()) {
             if(entry.getValue()) {
-                if (!result.isEmpty()) {
-                    result = result + NODE_SEPARATOR;
+                if (!result.toString().isEmpty()) {
+                    result.append(NODE_SEPARATOR);
                 }
-                result = result + entry.getKey();
+                result.append(entry.getKey());
             }
         }
-        return result;
+        return result.toString();
     }
 
     @Override

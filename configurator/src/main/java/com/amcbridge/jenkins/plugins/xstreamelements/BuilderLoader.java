@@ -1,6 +1,7 @@
 package com.amcbridge.jenkins.plugins.xstreamelements;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import com.amcbridge.jenkins.plugins.configurator.BuildConfigurationManager;
@@ -9,7 +10,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("builders")
-public class BuilderLoader {
+public class BuilderLoader implements Serializable{
 
     private static final String BUILDER = "/plugins/build-configurator/config/Builders.xml";
     private List<Builder> builders;

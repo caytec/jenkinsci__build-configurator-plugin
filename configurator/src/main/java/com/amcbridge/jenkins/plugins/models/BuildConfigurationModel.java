@@ -143,11 +143,19 @@ public class BuildConfigurationModel {
     }
 
     public void setScripts(String[] scripts) {
-        this.scripts = scripts;
+        if (scripts != null) {
+            this.scripts = scripts.clone();
+        } else {
+            this.scripts = null;
+        }
     }
 
     public String[] getScripts() {
-        return scripts;
+        if (this.scripts != null) {
+            return scripts.clone();
+        } else {
+            return null;
+        }
     }
 
     public void setState(ConfigurationState state) {

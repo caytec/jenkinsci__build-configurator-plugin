@@ -3,8 +3,10 @@ package com.amcbridge.jenkins.plugins.xstreamelements;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
+import java.io.Serializable;
+
 @XStreamAlias("builder")
-public class Builder {
+public class Builder implements Serializable{
 
     @XStreamAsAttribute
     private String key, value;

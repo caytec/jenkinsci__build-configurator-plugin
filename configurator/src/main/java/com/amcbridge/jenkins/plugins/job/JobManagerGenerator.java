@@ -28,6 +28,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.*;
 import javax.xml.xpath.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,8 +76,9 @@ public class JobManagerGenerator {
             updateJobXML(jobName, config);
         } else {
             File jobFile = getJobXMLFile(config, JOB_TEMPLATE_PATH, false);
-            FileInputStream fis = new FileInputStream(jobFile);
-            BuildConfigurationManager.getJenkins().createProjectFromXML(jobName, fis);
+            try (FileInputStream fis = new FileInputStream(jobFile)) {
+                BuildConfigurationManager.getJenkins().createProjectFromXML(jobName, fis);
+            }
         }
         for (int i = 0; i < config.getProjectToBuild().size(); i++) {
             config.getProjectToBuild().get(i).setArtifacts(prevArtifacts.get(i));
@@ -145,12 +147,12 @@ public class JobManagerGenerator {
 
     private static void updateJobXML(String jobName, BuildConfigurationModel config) throws IOException, TransformerException, SAXException, ParserConfigurationException, XPathExpressionException {
         AbstractItem item = (AbstractItem) BuildConfigurationManager.getJenkins().getItemByFullName(jobName);
-        if (item == null) {
-            throw new NullPointerException("Jenkins item not found");
-        }
         String jobPath = JOB_FOLDER_PATH + jobName + "/config.xml";
         File jobUpdateFile = getJobXMLFile(config, jobPath, true);
         Source streamSource = new StreamSource(jobUpdateFile);
+        if (item == null) {
+            throw new JenkinsInstanceNotFoundException("Jenkins instance not found");
+        }
         item.updateByXml(streamSource);
         item.save();
     }
@@ -296,8 +298,6 @@ public class JobManagerGenerator {
         XPathExpression exp;
         exp = xPath.compile(XPATH_FILE_TO_COPY);
         fileNameNode = (Node) exp.evaluate(doc, XPathConstants.NODE);
-        fileNameNode.getTextContent();
-        fileNameNode.getNodeValue();
         if (jobName != null) {
             fileNameNode.setTextContent(jobName + ".xml");
         }
@@ -403,7 +403,7 @@ public class JobManagerGenerator {
         if (xml.isEmpty()) {
             return docBuilder.newDocument();
         }
-        try(InputStream input = new ByteArrayInputStream(xml.getBytes())) {
+        try(InputStream input = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
             return docBuilder.parse(input);
         } catch (Exception e) {
             logger.error("Error parsing xml",e);
