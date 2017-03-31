@@ -4,6 +4,7 @@ import com.amcbridge.jenkins.plugins.serialization.Project;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class ProjectVersion {
 
@@ -39,7 +40,7 @@ public class ProjectVersion {
         fileVer = System.getenv("WORKSPACE") + File.separator + fileVer;
         File f = new File(fileVer);
         char[] b = new char[(int) f.length()];
-        try (FileReader fr = new FileReader(f)) {
+        try (InputStreamReader fr = new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8)) {
             fr.read(b);
             fr.close();
         } catch (IOException ex) {

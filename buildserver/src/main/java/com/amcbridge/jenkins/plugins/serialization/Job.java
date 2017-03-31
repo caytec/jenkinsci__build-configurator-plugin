@@ -46,7 +46,11 @@ public class Job {
     }
 
     public void setScripts(String[] scripts) {
-        this.scripts = scripts;
+        if (scripts != null) {
+            this.scripts = scripts.clone();
+        } else {
+            this.scripts = null;
+        }
     }
 
     public Map<String, Boolean> getBuildMachineConfiguration() {
@@ -58,7 +62,11 @@ public class Job {
     }
 
     public String[] getScripts() {
-        return scripts;
+        if (this.scripts != null) {
+            return scripts.clone();
+        } else {
+            return null;
+        }
     }
 
     @Override

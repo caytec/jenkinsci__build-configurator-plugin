@@ -6,6 +6,9 @@ import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BuildServer {
@@ -70,23 +73,23 @@ public class BuildServer {
             Process process = Runtime.getRuntime().exec(command, null, fullProjectPath);
             processOutput(process.getInputStream(), "RESULT");
             if (processOutput(process.getErrorStream(), "ERROR STREAM") == 0) {
-                System.exit(1);
+                throw new RuntimeException();
             }
             int returnCode = process.waitFor();
             logger.info(String.format("%s:\t%s%n%n", "RETURN CODE", returnCode));
             if (returnCode != 0) {
-                System.exit(returnCode);
+                throw new RuntimeException();
             }
         } catch (Exception ex) {
             logger.error("Executing project's command error: ", ex);
-            System.exit(1);
+            throw new RuntimeException();
         }
     }
 
     private int processOutput(InputStream stream, String message) {
         boolean msgWritten = false;
         String line;
-        try (BufferedReader stdStream = new BufferedReader(new InputStreamReader(stream))) {
+        try (BufferedReader stdStream = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             while ((line = stdStream.readLine()) != null) {
                 if (!msgWritten) {
                     logger.info(String.format("%s:", message));
@@ -97,7 +100,7 @@ public class BuildServer {
             logger.info(String.format("%n"));
         } catch (IOException ex) {
             logger.error("Error while reading process' stream: ", ex);
-            System.exit(1);
+            throw new RuntimeException();
         }
         return msgWritten ? 0 : 1;
     }

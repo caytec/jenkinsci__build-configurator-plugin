@@ -42,14 +42,14 @@ public class VersionFile {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Config)) {
+        if (obj instanceof VersionFile) {
+            return new EqualsBuilder()
+                    .append(this.files, ((VersionFile)obj).files)
+                    .append(this.versionFile, ((VersionFile)obj).versionFile)
+                    .isEquals();
+        } else {
             return false;
         }
-        VersionFile other = VersionFile.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.files, other.files)
-                .append(this.versionFile, other.versionFile)
-                .isEquals();
     }
 
     @Override

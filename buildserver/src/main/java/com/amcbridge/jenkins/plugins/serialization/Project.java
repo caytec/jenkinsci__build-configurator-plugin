@@ -77,18 +77,18 @@ public class Project {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Config)) {
+        if (obj instanceof Project) {
+            return new EqualsBuilder()
+                    .append(this.pathToFile, ((Project)obj).pathToFile)
+                    .append(this.localDirectory, ((Project)obj).localDirectory)
+                    .append(this.repository, ((Project)obj).repository)
+                    .append(this.pathToArtifacts, ((Project)obj).pathToArtifacts)
+                    .append(this.versionFiles, ((Project)obj).versionFiles)
+                    .append(this.configs, ((Project)obj).configs)
+                    .isEquals();
+        } else {
             return false;
         }
-        Project other = Project.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.pathToFile, other.pathToFile)
-                .append(this.localDirectory, other.localDirectory)
-                .append(this.repository, other.repository)
-                .append(this.pathToArtifacts, other.pathToArtifacts)
-                .append(this.versionFiles, other.versionFiles)
-                .append(this.configs, other.configs)
-                .isEquals();
     }
 
     @Override

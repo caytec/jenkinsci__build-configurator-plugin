@@ -29,13 +29,13 @@ public class PathToArtifacts {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Config)) {
+        if (obj instanceof PathToArtifacts) {
+            return new EqualsBuilder()
+                    .append(this.files, ((PathToArtifacts)obj).files)
+                    .isEquals();
+        } else {
             return false;
         }
-        PathToArtifacts other = PathToArtifacts.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.files, other.files)
-                .isEquals();
     }
 
     @Override

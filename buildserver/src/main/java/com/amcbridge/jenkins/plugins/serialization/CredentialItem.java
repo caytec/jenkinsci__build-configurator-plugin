@@ -62,17 +62,17 @@ public class CredentialItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Job)) {
+        if (obj instanceof CredentialItem) {
+            return new EqualsBuilder()
+                    .append(this.scope, ((CredentialItem)obj).scope)
+                    .append(this.id, ((CredentialItem)obj).id)
+                    .append(this.username, ((CredentialItem)obj).username)
+                    .append(this.description, ((CredentialItem)obj).description)
+                    .append(this.provider, ((CredentialItem)obj).provider)
+                    .isEquals();
+        } else {
             return false;
         }
-        CredentialItem other = CredentialItem.class.cast(obj);
-        return new EqualsBuilder()
-                .append(this.scope, other.scope)
-                .append(this.id, other.id)
-                .append(this.username, other.username)
-                .append(this.description, other.description)
-                .append(this.provider, other.provider)
-                .isEquals();
     }
 
     @Override
