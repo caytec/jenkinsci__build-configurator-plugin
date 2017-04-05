@@ -14,6 +14,8 @@
     <name>Jenkins Build Automation Management Tool</name>
     <description>Allows configuring and administrating project builds, automatically creating jobs for Jenkins.</description>
 
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+Configurator+plugin</url>
+
     <properties>
         <jenkins.version>1.625.3</jenkins.version>
         <svnkit.version>1.8.5</svnkit.version>
@@ -26,6 +28,20 @@
             <url>http://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
+
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/build-configurator-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-configurator-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/build-configurator-plugin</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>AMCBridgeDevTeam</id>
+            <name>AMC Bridge</name>
+            <email>support@amcbridge.com</email>
+        </developer>
+    </developers>
 
     <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
     <repositories>
