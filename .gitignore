@@ -1,0 +1,5 @@
+.idea/
+buildserver/target/
+build-configurator-parent.iml
+buildserver/dependency-reduced-pom.xml
+release.properties
