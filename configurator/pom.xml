@@ -3,11 +3,11 @@
     <parent>
         <groupId>com.amcbridge</groupId>
         <artifactId>build-configurator-parent</artifactId>
-        <version>1.0.6.0-SNAPSHOT</version>
+        <version>1.0.6.0</version>
     </parent>
     
     <artifactId>build-configurator</artifactId>
-    <version>1.0.6.0-SNAPSHOT</version>
+    <version>1.0.6.0</version>
     <packaging>hpi</packaging>
     <name>Jenkins Build Automation Management Tool</name>
     <description>Allows configuring and administrating project builds, automatically creating jobs for Jenkins.</description>
