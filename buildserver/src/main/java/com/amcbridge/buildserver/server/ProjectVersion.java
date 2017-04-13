@@ -74,7 +74,7 @@ public class ProjectVersion {
                 tmp = tmp.replaceAll(" ", "");
                 major = tmp.substring(0, tmp.indexOf('.'));
                 tmp = tmp.substring(tmp.indexOf('.') + 1, tmp.length());
-                minor = tmp.substring(0);
+                minor = tmp.substring(0, tmp.indexOf('.'));
                 break;
             case "vb":
                 tmp = tmp.substring(tmp.indexOf("AssemblyFileVersion(\""));
