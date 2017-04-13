@@ -20,6 +20,14 @@
         <module>configurator</module>
     </modules>
 
+    <developers>
+        <developer>
+            <id>AMCBridgeDevTeam</id>
+            <name>AMC Bridge</name>
+            <email>support@amcbridge.com</email>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/build-configurator-plugin.git</connection>
         <developerConnection>scm:git:https://github.com/jenkinsci/build-configurator-plugin.git</developerConnection>
