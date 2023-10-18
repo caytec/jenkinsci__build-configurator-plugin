@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -31,6 +33,13 @@ public class JobSCM {
 
     public static Document insertSCM(Document doc, String xml) {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+        try {
+            docFactory.setFeature(FEATURE, true);
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException("ParserConfigurationException was thrown. The feature '"
+                    + FEATURE + "' is not supported by your XML processor.", e);
+        }
         DocumentBuilder docBuilder;
         Node scm;
         try(InputStream inputSCM = new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8")))) {

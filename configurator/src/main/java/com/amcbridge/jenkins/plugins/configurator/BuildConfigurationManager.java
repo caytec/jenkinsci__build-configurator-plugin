@@ -407,6 +407,13 @@ public class BuildConfigurationManager {
                 return new LinkedList<>();
             }
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+            try {
+                dbFactory.setFeature(FEATURE, true);
+            } catch (ParserConfigurationException e) {
+                throw new IllegalStateException("ParserConfigurationException was thrown. The feature '"
+                        + FEATURE + "' is not supported by your XML processor.", e);
+            }
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
 

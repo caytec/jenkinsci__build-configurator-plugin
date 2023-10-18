@@ -2,6 +2,8 @@ package com.amcbridge.jenkins.plugins.job;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +48,13 @@ public class JobAssignedNode implements JobElementDescriptionCheckBox {
             doc = docBuilder.newDocument();
             node = doc.createElement(ELEMENT_TAG);
             node.setTextContent(getNodes(config));
+            String FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+            try {
+                docFactory.setFeature(FEATURE, true);
+            } catch (ParserConfigurationException e) {
+                throw new IllegalStateException("ParserConfigurationException was thrown. The feature '"
+                        + FEATURE + "' is not supported by your XML processor.", e);
+            }
         } catch (Exception e) {
             logger.error("Generate XML error", e);
         }
